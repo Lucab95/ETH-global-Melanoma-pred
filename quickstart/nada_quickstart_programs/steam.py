@@ -59,8 +59,7 @@ def softmax_two_values(x1, x2):
     return e_x / e_x.sum()        # Normalize to get percentages
 
 def main():
-    st.title("Neuroimaging Analysis App")
-    st.write("This app analyzes neuroimaging data using a pre-trained model.")
+    st.title("Melanoma detection webapp - ETHGlobal Brussels")
 
     # Load environment variables
     load_environment()
