@@ -13,4 +13,5 @@ prime_size = 128
 
 [[programs]]
 path = "src/multy_percep.py"
+name = "multy_percep"
 prime_size = 128
