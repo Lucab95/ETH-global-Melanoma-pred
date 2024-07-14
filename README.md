@@ -29,17 +29,23 @@ To use the prediction service, please follow the isntruction on the next step:
 
 ### Inference 
 
-1. Install all the required library by:
+1. Create a virtual environment and activate it:
+```
+python -m venv venv
+source venv/bin/activate 
+```
+
+2. Install all the required library by:
 ```
  pip install -r requirements.txt
  ```
-2. Create an .env file according to `https://docs.nillion.com/network-configuration` and place it inside `/nillion/quickstart/nada_quickstart_programs`
-3. Run the streamlit platfor with:
+3. Create an .env file according to `https://docs.nillion.com/network-configuration` and place it inside `/nillion/quickstart/nada_quickstart_programs`
+4. Run the streamlit platfor with:
  ```
  Streamlit run steam.py
  ```
-4. Upload an image of a skin area.
-5. Receive your prediction.
+5. Upload an image of a skin area.
+6. Receive your prediction.
 
 The image is processed privately without being stored on any server, ensuring user data remains confidential.
 
