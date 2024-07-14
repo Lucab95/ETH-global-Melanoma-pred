@@ -20,6 +20,7 @@ from cosmpy.aerial.client import LedgerClient
 from cosmpy.aerial.wallet import LocalWallet
 from cosmpy.crypto.keypairs import PrivateKey
 
+label = {"0": "Benign", "1": "Malignant"}
 # Load environment variables
 def load_environment():
     home = os.getenv("HOME")
@@ -124,14 +125,11 @@ def main():
 
             # Compute results
             result = asyncio.run(compute_results(model_user_client, payments_wallet, payments_client, program_id, cluster_id, compute_bindings, model_store_id, images_store_id))
-            out_0 = result["my_output_0_0"]
-            out_1 = result["my_output_0_1"]
-            output_tensor = torch.tensor([out_0, out_1], dtype=torch.float32)
-            _, predicted_class = torch.max(output_tensor, 0)
-            
-            print(f"Predicted class: {predicted_class.item()}")
-            print(f"Raw output: {output_tensor}")
-            st.write(f"Compute Result: {predicted_class.item()}")
+            first_key = next(iter(result))
+            parts = first_key.split('_')
+            number_part = parts[-1]
+            st.write(f"Predicted class: {label[str(number_part)]}")
+            print(f"Predicted class: {label[str(number_part)]}")
 
         # Display the captured output in Streamlit
         st.markdown("### Terminal Output")

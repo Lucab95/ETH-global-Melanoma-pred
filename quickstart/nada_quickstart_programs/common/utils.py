@@ -280,5 +280,4 @@ async def compute(
         if isinstance(compute_event, nillion.ComputeFinishedEvent):
             if verbose:
                 print(f"✅ Compute complete for compute_id {compute_event.uuid}")
-                print(f"🖥️  The result is {compute_event.result.value}")
             return compute_event.result.value
