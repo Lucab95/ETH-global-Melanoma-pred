@@ -17,6 +17,8 @@ The neural network was developed using `nada_ai` from Nillion and was trained to
 
 The model, consisting of 52,744 weights, is stored securely as secrets on Nillion.
 
+In order to host the model on Nillion one must run the provider.ipynb notebook.
+
 ## Hosting
 
 The model is hosted on the Nillion testnet, and we employ a Streamlit webapp allowing users to upload a skin tumor image and quickly receive a prediction. The service is currently free, with transaction costs on the testnet covered by our wallet.
