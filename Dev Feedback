@@ -1,0 +1,19 @@
+Feedback:
+
+
+When setting the: model_provider_client = create_nillion_client(model_provider_userkey, model_provider_nodekey)
+
+Its important to randomize the seeds:
+
+model_provider_userkey = UserKey.from_seed((seed))
+model_provider_nodekey = NodeKey.from_seed((seed))
+
+This way if you have to call the flow of trying to storing a model several times in a somewhat short amount of time, the operations don’t overlap and you get strange errors, related to the cluster ID. 
+
+Don’t have more than one nillion-devnet instance running at the same time, it can also give errors related to the cluster ID because the eviroments doesn’t end up being updated, to remidiy this, do killall nellion-devenet.
+
+Payload size and cost to store the model weights as secrets:
+
+The .env file is crucial, also for the react app, if you don’t fill in a .env file in the car-million folder you will see” Cluster ID: Not set - update your .env file with Nillion network values, and you will not be able to  Connect to Nillion Client
+
+The output of the binary class Nillion Neural Network was surprising, it seems to output the label based on the position in which the output is given rather than the actual label associated to it.
