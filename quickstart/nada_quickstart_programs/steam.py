@@ -21,9 +21,12 @@ from cosmpy.aerial.wallet import LocalWallet
 from cosmpy.crypto.keypairs import PrivateKey
 
 label = {"0": "Benign", "1": "Malignant"}
+
 # Load environment variables
 def load_environment():
     home = os.getenv("HOME")
+    # Adjust the path accordingly, either specify the absolute path or move to quickstart/nada_quickstart_programs and uncomment the next line
+    # load_dotenv()
     load_dotenv(f"{home}/Desktop/nillion/quickstart/nada_quickstart_programs/.env")
 
 async def store_images(model_user_client, payments_wallet, payments_client, cluster_id, test_image_batch, secret_name, nada_type, ttl_days, permissions):

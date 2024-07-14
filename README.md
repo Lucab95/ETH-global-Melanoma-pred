@@ -10,12 +10,12 @@ The model is trained on the [Melanoma Cancer Image Dataset](https://www.kaggle.c
 
 The neural network was developed using `nada_ai` from Nillion and was trained to meet size constraints while maintaining robust performance metrics:
 
-- **Precision**: 88.24%
-- **Recall**: 81.92%
-- **F1 Score**: 84.96%
-- **Accuracy**: 87.25%
+- **Precision**: 80.607%
+- **Recall**: 76.327%
+- **F1 Score**: 78.409%
+- **Accuracy**: 76.625%
 
-The model, consisting of 52,744 weights, is stored securely as secrets on Nillion.
+The model, consisting of 94 weights, is stored securely as secrets on Nillion.
 
 In order to host the model on Nillion one must run the provider.ipynb notebook.
 
@@ -25,11 +25,17 @@ The model is hosted on the Nillion testnet, and we employ a Streamlit webapp all
 
 ## Usage
 
-To use the prediction service:
+To use the prediction service, please follow the isntruction on the next step:
 
-1. Visit our Streamlit webapp.
-2. Upload an image of the skin tumor.
-3. Receive your prediction.
+### Inference 
+
+1. Install all the required library by:
+` pip install -r requirements.txt`
+2. Create an .env file according to `https://docs.nillion.com/network-configuration` and place it inside `/nillion/quickstart/nada_quickstart_programs`
+3. Run the streamlit platfor with:
+ ` Streamlit run steam.py`
+4. Upload an image of a skin area.
+5. Receive your prediction.
 
 The image is processed privately without being stored on any server, ensuring user data remains confidential.
 
@@ -40,6 +46,4 @@ Contributions to this project are welcome. You can contribute in the following w
 - Improving the model's accuracy and efficiency.
 - Enhancing the web interface.
 - Expanding the dataset with more diverse image samples.
-
-For more details on how to contribute, please refer to the [contributing guidelines](CONTRIBUTING.md).
 
