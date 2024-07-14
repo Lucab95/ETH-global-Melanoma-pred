@@ -30,10 +30,14 @@ To use the prediction service, please follow the isntruction on the next step:
 ### Inference 
 
 1. Install all the required library by:
-` pip install -r requirements.txt`
+```
+ pip install -r requirements.txt
+ ```
 2. Create an .env file according to `https://docs.nillion.com/network-configuration` and place it inside `/nillion/quickstart/nada_quickstart_programs`
 3. Run the streamlit platfor with:
- ` Streamlit run steam.py`
+ ```
+ Streamlit run steam.py
+ ```
 4. Upload an image of a skin area.
 5. Receive your prediction.
 
