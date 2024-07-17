@@ -24,11 +24,8 @@ label = {"0": "Benign", "1": "Malignant"}
 
 # Load environment variables
 def load_environment():
-    home = os.getenv("HOME")
-    # Adjust the path accordingly, either specify the absolute path or move to quickstart/nada_quickstart_programs and uncomment the next line
-    # load_dotenv()
-    load_dotenv(f"{home}/Desktop/nillion/quickstart/nada_quickstart_programs/.env")
-
+    load_dotenv(f".env")
+    
 async def store_images(model_user_client, payments_wallet, payments_client, cluster_id, test_image_batch, secret_name, nada_type, ttl_days, permissions):
     images_store_id = await store_secret_array(
         model_user_client,
@@ -67,40 +64,54 @@ def main():
 
     # Load environment variables
     load_environment()
-    
+
     # Display some environment information
     cluster_id = os.getenv("NILLION_CLUSTER_ID")
     grpc_endpoint = os.getenv("NILLION_NILCHAIN_GRPC")
 
+    st.write(f"Cluster ID: {cluster_id}")
+    st.write(f"gRPC Endpoint: {grpc_endpoint}")
+
+    if not cluster_id or not grpc_endpoint:
+        st.error("Environment variables for NILLION_CLUSTER_ID or NILLION_NILCHAIN_GRPC are not set.")
+        return
+
     uploaded_file = st.file_uploader("Choose an image", type=["jpeg", "jpg", "png"])
-    
+
     if uploaded_file is not None:
         st.success("File uploaded successfully!")
-        
+
         # Display the uploaded image
         image = Image.open(uploaded_file)
         st.image(image, caption='Uploaded Image', use_column_width=True)
-        
+
         # Transform and process the image
         transformed_image = transforms.Compose([
             transforms.Resize((16, 16)),
             transforms.ToTensor(),
         ])(image)
-        
-        
-        # Define parameters for storing the image
+
         model_user_userkey = UserKey.from_seed("abc")
         model_user_nodekey = NodeKey.from_seed(str(random.randint(0, 1000)))
-        model_user_client = create_nillion_client(model_user_userkey, model_user_nodekey)
-        
+
+        # Debugging: Print the keys
+        st.write(f"UserKey: {model_user_userkey}")
+        st.write(f"NodeKey: {model_user_nodekey}")
+
+        # Create Nillion client
+        try:
+            model_user_client = create_nillion_client(model_user_userkey, model_user_nodekey)
+        except Exception as e:
+            st.error(f"Error creating Nillion client: {e}")
+            return
+
         payments_config = create_payments_config(os.getenv("NILLION_NILCHAIN_CHAIN_ID"), grpc_endpoint)
         payments_client = LedgerClient(payments_config)
         payments_wallet = LocalWallet(
             PrivateKey(bytes.fromhex(os.getenv("NILLION_NILCHAIN_PRIVATE_KEY_0"))),
             prefix="nillion",
         )
-        
-        # Load provider variables
+
         with open("src/data/tmp.json", "r") as provider_variables_file:
             provider_variables = json.load(provider_variables_file)
 
@@ -108,33 +119,30 @@ def main():
         model_store_id = provider_variables["model_store_id"]
         model_provider_party_id = provider_variables["model_provider_party_id"]
 
-
         test_image_batch = np.array(transformed_image.unsqueeze(0))
         permissions = nillion.Permissions.default_for_user(model_user_client.user_id)
         permissions.add_compute_permissions({model_user_client.user_id: {program_id}})
 
-        # Redirect stdout to capture print statements
         output = io.StringIO()
         with contextlib.redirect_stdout(output):
-            # Store images and get store ID
-            images_store_id = asyncio.run(store_images(model_user_client, payments_wallet, payments_client, cluster_id, test_image_batch, "my_input", na.SecretRational, 1, permissions))
-            print(f"Images Store ID: {images_store_id}")
+            try:
+                images_store_id = asyncio.run(store_images(model_user_client, payments_wallet, payments_client, cluster_id, test_image_batch, "my_input", na.SecretRational, 1, permissions))
+                print(f"Images Store ID: {images_store_id}")
 
-            # Define compute bindings
-            compute_bindings = nillion.ProgramBindings(program_id)
-            compute_bindings.add_input_party("Provider", model_provider_party_id)
-            compute_bindings.add_input_party("User", model_user_client.party_id)
-            compute_bindings.add_output_party("User", model_user_client.party_id)
+                compute_bindings = nillion.ProgramBindings(program_id)
+                compute_bindings.add_input_party("Provider", model_provider_party_id)
+                compute_bindings.add_input_party("User", model_user_client.party_id)
+                compute_bindings.add_output_party("User", model_user_client.party_id)
 
-            # Compute results
-            result = asyncio.run(compute_results(model_user_client, payments_wallet, payments_client, program_id, cluster_id, compute_bindings, model_store_id, images_store_id))
-            first_key = next(iter(result))
-            parts = first_key.split('_')
-            number_part = parts[-1]
-            st.write(f"Predicted class: {label[str(number_part)]}")
-            print(f"Predicted class: {label[str(number_part)]}")
+                result = asyncio.run(compute_results(model_user_client, payments_wallet, payments_client, program_id, cluster_id, compute_bindings, model_store_id, images_store_id))
+                first_key = next(iter(result))
+                parts = first_key.split('_')
+                number_part = parts[-1]
+                st.write(f"Predicted class: {label[str(number_part)]}")
+                print(f"Predicted class: {label[str(number_part)]}")
+            except Exception as e:
+                st.error(f"Error during computation: {e}")
 
-        # Display the captured output in Streamlit
         st.markdown("### Terminal Output")
         st.text_area("Output", output.getvalue(), height=300)
 
